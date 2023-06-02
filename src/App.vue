@@ -1,22 +1,38 @@
 <template>
   <div class="container">
-    <h1>Lista de Compras</h1>
+    <h1 class="title">Lista de Compras</h1>
 
     <form @submit.prevent="addItem" class="mainForm">
-      <input v-model="newItem" placeholder="Nome do item" required />
-      <input v-model.number="newPrice" placeholder="Preço" required />
+      <div class="inputs">
+        <input
+          v-model="newItem"
+          class="nameInput"
+          placeholder="Nome do item"
+          required
+        />
+        <input
+          v-model.number="newPrice"
+          class="priceInput"
+          placeholder="Preço"
+          required
+        />
+      </div>
       <button type="submit" class="buttonAdd">Adicionar</button>
+      <p class="yourBag">Sua Sacola</p>
     </form>
 
     <ul class="listItems">
-      <li v-for="(item, index) in items" :key="index">
-        <p>{{ item.name }}</p>
-        -
-        <p>R${{ item.price }}</p>
-      </li>
+      <div class="backgroundListItem">
+        <li v-for="(item, index) in items" :key="index">
+          <p>{{ item.name }}</p>
+          <p>R$ {{ item.price.toFixed(2).replace('.', ',') }}</p>
+        </li>
+      </div>
     </ul>
 
-    <p class="totalPrice">Total: R$ {{ calculateTotal() }}</p>
+    <p class="totalPrice">
+      👉 Total: R$ {{ calculateTotal().toFixed(2).replace('.', ',') }} 👈
+    </p>
   </div>
 </template>
 
@@ -29,14 +45,27 @@ export default {
       items: [],
     }
   },
+  mounted() {
+    this.loadItemsFromLocalStorage()
+  },
   methods: {
     addItem() {
       this.items.push({ name: this.newItem, price: this.newPrice })
       this.newItem = ''
       this.newPrice = 0
+      this.saveItemsToLocalStorage()
     },
     calculateTotal() {
       return this.items.reduce((total, item) => total + item.price, 0)
+    },
+    saveItemsToLocalStorage() {
+      localStorage.setItem('items', JSON.stringify(this.items))
+    },
+    loadItemsFromLocalStorage() {
+      const storedItems = localStorage.getItem('items')
+      if (storedItems) {
+        this.items = JSON.parse(storedItems)
+      }
     },
   },
 }
@@ -48,10 +77,12 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
-  background-color: #e2e2e2;
+  background-color: #9eabb7;
   font-family: sans-serif;
 }
+
 .container {
   display: flex;
   flex-direction: column;
@@ -59,17 +90,46 @@ body {
   align-items: center;
   height: 100vh;
 }
+
+.title {
+  font-size: 2rem;
+  text-align: center;
+  padding: 10px;
+  font-weight: 300;
+  margin-bottom: 2vw;
+}
+
 .mainForm {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 .mainForm input {
-  margin: 10px;
-  padding: 10px;
+  padding: 20px 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+.mainForm input:focus {
+  outline: 2px solid blue;
+}
+.backgroundListItem {
+  background: #9eabb7;
+  height: 100%;
+  border-radius: 8px;
+}
+.nameInput {
+  width: 28vw;
+}
+.priceInput {
+  width: 10vw;
+}
+.inputs {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
 }
 .buttonAdd {
   margin: 10px;
@@ -78,14 +138,28 @@ body {
   border-radius: 5px;
   background-color: #008000;
   color: #fff;
+  width: 35vw;
+  height: 8vw;
+  cursor: pointer;
 }
-ul {
+
+.yourBag {
+  color: #000;
+  padding: 3px;
+  width: 100%;
+  text-align: center;
+}
+
+.listItems {
   list-style: none;
   height: 300px;
-  width: 200px;
+  width: 40vw;
   overflow: scroll;
-  border: 1px solid red;
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 8px;
 }
+
 li {
   display: flex;
   flex-direction: row;
@@ -95,5 +169,10 @@ li {
   min-width: 100%;
   padding: 10px;
   border-bottom: 1px solid green;
+}
+
+.totalPrice {
+  margin-top: 10px;
+  font-size: 1.5rem;
 }
 </style>
