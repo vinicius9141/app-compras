@@ -132,6 +132,9 @@ body {
   gap: 15px;
 }
 .buttonAdd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 10px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -155,7 +158,6 @@ body {
   height: 300px;
   width: 40vw;
   overflow: scroll;
-  background: #ffffff;
   padding: 8px;
   border-radius: 8px;
 }
@@ -174,5 +176,15 @@ li {
 .totalPrice {
   margin-top: 10px;
   font-size: 1.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  li {
+    width: 35vw;
+    font-size: 0.6rem;
+  }
+  .mainForm input {
+    padding: 15px 10px;
+  }
 }
 </style>
