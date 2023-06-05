@@ -17,7 +17,7 @@
       </li>
     </ul>
 
-    <p class="totalPrice">Total: R$ {{ calculateTotal().toFixed(2) }}</p>
+    <p class="totalPrice">👉 Total: R$ {{ calculateTotal().toFixed(2) }} 👈</p>
   </div>
 </template>
 
