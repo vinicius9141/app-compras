@@ -1,38 +1,23 @@
 <template>
   <div class="container">
-    <h1 class="title">Lista de Compras</h1>
+    <h1>Lista de Compras</h1>
 
     <form @submit.prevent="addItem" class="mainForm">
-      <div class="inputs">
-        <input
-          v-model="newItem"
-          class="nameInput"
-          placeholder="Nome do item"
-          required
-        />
-        <input
-          v-model.number="newPrice"
-          class="priceInput"
-          placeholder="Preço"
-          required
-        />
-      </div>
+      <input v-model="newItem" placeholder="Nome do item" required />
+      <input v-model.number="newPrice" placeholder="Preço" required />
       <button type="submit" class="buttonAdd">Adicionar</button>
-      <p class="yourBag">Sua Sacola</p>
     </form>
 
     <ul class="listItems">
-      <div class="backgroundListItem">
-        <li v-for="(item, index) in items" :key="index">
-          <p>{{ item.name }}</p>
-          <p>R$ {{ item.price.toFixed(2).replace('.', ',') }}</p>
-        </li>
-      </div>
+      <li v-for="(item, index) in items" :key="index">
+        <p>{{ item.name }}</p>
+        -
+        <p>R$ {{ item.price.toFixed(2) }}</p>
+        <button @click="removeItem(index)" class="btnRemove">Remover</button>
+      </li>
     </ul>
 
-    <p class="totalPrice">
-      👉 Total: R$ {{ calculateTotal().toFixed(2).replace('.', ',') }} 👈
-    </p>
+    <p class="totalPrice">Total: R$ {{ calculateTotal().toFixed(2) }}</p>
   </div>
 </template>
 
@@ -42,33 +27,37 @@ export default {
     return {
       newItem: '',
       newPrice: 0,
-      items: [],
-    }
+      items: []
+    };
   },
   mounted() {
-    this.loadItemsFromLocalStorage()
+    this.loadItemsFromLocalStorage();
   },
   methods: {
     addItem() {
-      this.items.push({ name: this.newItem, price: this.newPrice })
-      this.newItem = ''
-      this.newPrice = 0
-      this.saveItemsToLocalStorage()
+      this.items.push({ name: this.newItem, price: this.newPrice });
+      this.newItem = '';
+      this.newPrice = 0;
+      this.saveItemsToLocalStorage();
+    },
+    removeItem(index) {
+      this.items.splice(index, 1);
+      this.saveItemsToLocalStorage();
     },
     calculateTotal() {
-      return this.items.reduce((total, item) => total + item.price, 0)
+      return this.items.reduce((total, item) => total + item.price, 0);
     },
     saveItemsToLocalStorage() {
-      localStorage.setItem('items', JSON.stringify(this.items))
+      localStorage.setItem('items', JSON.stringify(this.items));
     },
     loadItemsFromLocalStorage() {
-      const storedItems = localStorage.getItem('items')
+      const storedItems = localStorage.getItem('items');
       if (storedItems) {
-        this.items = JSON.parse(storedItems)
+        this.items = JSON.parse(storedItems);
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 
 <style>
@@ -79,7 +68,7 @@ export default {
 }
 
 body {
-  background-color: #9eabb7;
+  background-color: #acb3ff;
   font-family: sans-serif;
 }
 
@@ -116,7 +105,7 @@ body {
   outline: 2px solid blue;
 }
 .backgroundListItem {
-  background: #9eabb7;
+  background: #acb3ff;
   height: 100%;
   border-radius: 8px;
 }
@@ -156,7 +145,7 @@ body {
 .listItems {
   list-style: none;
   height: 300px;
-  width: 40vw;
+  width: 70vw;
   overflow: scroll;
   padding: 8px;
   border-radius: 8px;
@@ -172,7 +161,13 @@ li {
   padding: 10px;
   border-bottom: 1px solid green;
 }
-
+.btnRemove{
+  background-color: #6A041D;
+  color: #fff;
+  padding: 5px;
+  border: none;  
+  border-radius: 8px;
+}
 .totalPrice {
   margin-top: 10px;
   font-size: 1.5rem;
@@ -180,8 +175,7 @@ li {
 
 @media screen and (max-width: 768px) {
   li {
-    width: 35vw;
-    font-size: 0.6rem;
+    width: 70vw;
   }
   .mainForm input {
     padding: 15px 10px;
