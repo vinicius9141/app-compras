@@ -12,13 +12,12 @@
     <ul class="listItems">
       <li v-for="(item, index) in items" :key="index">
         <p>{{ item.name }} {{ item.quantity > 1 ? 'x' + item.quantity : '' }}</p>
-        -
-        <p>R$ {{ item.total }}</p>
+        <p>R$ {{ item.total.toFixed(2) }}</p>
         <button @click="removeItem(index)" class="btnRemove">Remover</button>
       </li>
     </ul>
 
-    <p class="totalPrice">👉 Total: R$ {{ calculateTotal() }} 👈</p>
+    <p class="totalPrice">👉 Total: R$ {{ calculateTotal().toFixed(2) }} 👈</p>
   </div>
 </template>
 
