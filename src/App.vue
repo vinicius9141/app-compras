@@ -3,21 +3,22 @@
     <h1>Lista de Compras</h1>
 
     <form @submit.prevent="addItem" class="mainForm">
-      <input v-model="newItem" placeholder="Nome do item" required />
-      <input v-model.number="newPrice" placeholder="Preço" required />
+      <input v-model="newItemName" placeholder="Nome do item" required />
+      <input v-model.number="newItemQuantity" type="number" min="1" placeholder="Quantidade" required />
+      <input v-model.number="newItemPrice" placeholder="Preço" required />
       <button type="submit" class="buttonAdd">Adicionar</button>
     </form>
 
     <ul class="listItems">
       <li v-for="(item, index) in items" :key="index">
-        <p>{{ item.name }}</p>
+        <p>{{ item.name }} {{ item.quantity > 1 ? 'x' + item.quantity : '' }}</p>
         -
-        <p>R$ {{ item.price.toFixed(2) }}</p>
+        <p>R$ {{ item.total }}</p>
         <button @click="removeItem(index)" class="btnRemove">Remover</button>
       </li>
     </ul>
 
-    <p class="totalPrice">👉 Total: R$ {{ calculateTotal().toFixed(2) }} 👈</p>
+    <p class="totalPrice">👉 Total: R$ {{ calculateTotal() }} 👈</p>
   </div>
 </template>
 
@@ -25,8 +26,9 @@
 export default {
   data() {
     return {
-      newItem: '',
-      newPrice: 0,
+      newItemName: '',
+      newItemQuantity: 1,
+      newItemPrice: null,
       items: []
     };
   },
@@ -35,9 +37,13 @@ export default {
   },
   methods: {
     addItem() {
-      this.items.push({ name: this.newItem, price: this.newPrice });
-      this.newItem = '';
-      this.newPrice = 0;
+      const price = this.newItemPrice || 0;
+      const quantity = this.newItemQuantity || 1;
+      const total = quantity * price;
+      this.items.push({ name: this.newItemName, quantity, price, total });
+      this.newItemName = '';
+      this.newItemQuantity = 1;
+      this.newItemPrice = null;
       this.saveItemsToLocalStorage();
     },
     removeItem(index) {
@@ -45,7 +51,7 @@ export default {
       this.saveItemsToLocalStorage();
     },
     calculateTotal() {
-      return this.items.reduce((total, item) => total + item.price, 0);
+      return this.items.reduce((total, item) => total + item.total, 0);
     },
     saveItemsToLocalStorage() {
       localStorage.setItem('items', JSON.stringify(this.items));
@@ -145,7 +151,7 @@ body {
 .listItems {
   list-style: none;
   height: 300px;
-  width: 70vw;
+  width: 90vw;
   overflow: scroll;
   padding: 8px;
   border-radius: 8px;
