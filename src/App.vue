@@ -5,7 +5,7 @@
     <form @submit.prevent="addItem" class="mainForm">
       <input v-model="newItemName" placeholder="Nome do item" required />
       <input v-model.number="newItemQuantity" type="number" min="1" placeholder="Quantidade" required />
-      <input v-model.number="newItemPrice" placeholder="Preço" required />
+      <input v-model.number="newItemPrice" type="number" min="1" placeholder="Preço" required />
       <button type="submit" class="buttonAdd">Adicionar</button>
     </form>
 
